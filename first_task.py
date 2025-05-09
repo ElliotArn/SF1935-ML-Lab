@@ -11,13 +11,14 @@ mean = 0
 variance = 0.2
 sigma = np.sqrt(variance)
 
-# prior distribution for w0 & w1
+# Step 1: prior distribution for w0 & w1
 mu = [0, 0]
 alpha = 2
 cov_matrix = (1 / alpha) * np.identity(2)
 
-w0_linspace = np.linspace(-5, 5, 100)
-w1_linspace = np.linspace(-5, 5 , 100)
+linspace_size = 100
+w0_linspace = np.linspace(-5, 5, linspace_size)
+w1_linspace = np.linspace(-5, 5 , linspace_size)
 
 w0arr, w1arr = np.meshgrid(w0_linspace, w1_linspace)
 pos = np.dstack((w0arr, w1arr))
@@ -28,6 +29,7 @@ wpriorpdf = rv.pdf(pos)
 plt.contour(w0arr, w1arr, wpriorpdf)
 plt.show()
 
+# Step 2: plot likelihood across all w in parameter space for subset data
 trn_data_size = 3
 
 x_trn = np.linspace(-1, 1, 200)
@@ -37,10 +39,7 @@ t_trn_sample = w0_true + w1_true*x_trn_sample + np.random.normal(mean, sigma)
 x_tst = np.concatenate(np.linspace(-1.5, -1.1, 5), np.linspace(1.1, 1.5, 5))
 t_tst = w0_true + w1_true*x_tst + np.random.normal(mean, sigma)
 
-w_transpose = np.transpose([w0_true, w1_true])
-for sample in w_transpose:
-    t_trn_sample *=
-    np.random.normal()
+w_transpose = np.transpose([w0_linspace, w1_linspace])
 
 
 
