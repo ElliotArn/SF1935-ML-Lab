@@ -37,8 +37,9 @@ t_trn_sample = w0_true + w1_true*x_trn_sample + np.random.normal(mean, sigma)
 x_tst = np.concatenate(np.linspace(-1.5, -1.1, 5), np.linspace(1.1, 1.5, 5))
 t_tst = w0_true + w1_true*x_tst + np.random.normal(mean, sigma)
 
-w_transponent = np.transpose(wpriorpdf)
-for sample in w_transponent:
+w_transpose = np.transpose([w0_true, w1_true])
+for sample in w_transpose:
+    t_trn_sample *=
     np.random.normal()
 
 
