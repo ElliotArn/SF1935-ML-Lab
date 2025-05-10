@@ -1,11 +1,13 @@
 import pylab as pb
 import numpy as np
+from scipy.stats import norm
 import matplotlib.pyplot as plt
 from math import pi
 from scipy.stats import multivariate_normal
 from scipy.spatial.distance import cdist
 
 # true parameters and error values
+np.random.seed(14)
 w0_true = -1.2
 w1_true = 0.9
 error_mean = 0
@@ -41,7 +43,7 @@ trn_data_size = 50
 
 x_trn = np.linspace(-1, 1, 200)
 x_trn_sample = np.random.choice(x_trn, trn_data_size, False)
-t_trn_sample = w0_true + w1_true*x_trn_sample + np.random.normal(error_mean, error_sigma)
+t_trn_sample = w0_true + w1_true*x_trn_sample + np.random.normal(error_mean, error_sigma, size = trn_data_size)
 
 likelihood_grid = np.zeros((linspace_size, linspace_size))
 t_prediction = 0
@@ -93,7 +95,7 @@ plt.show()
 # Step 4: Plot sampled regression lines from posterior
 
 x_tst = np.concatenate((np.linspace(-1.5, -1.1, 5), np.linspace(1.1, 1.5, 5)))
-t_tst = w0_true + w1_true * x_tst + np.random.normal(error_mean, error_sigma)
+t_tst = w0_true + w1_true * x_tst + np.random.normal(error_mean, error_sigma, size = len(x_tst))
 
 wsamples = rv_post.rvs(size=5)
 
@@ -135,6 +137,15 @@ plt.errorbar(x_tst, mean_preds.ravel(), yerr=std_preds, fmt='o', color='green', 
 # Add training and test data for reference
 plt.scatter(x_trn_sample, t_trn_sample, color='blue', label='Training data')
 plt.scatter(x_tst, t_tst, color='red', label='Test targets')
+
+
+# part 6
+max_like_w = np.linalg.inv(x_ext_tranpose @ x_ext) @ x_ext_tranpose @ t_trn_sample.reshape(-1,1)
+
+max_like_x = np.linspace(-1.5, 1.5, 10)
+max_like_x_ext = np.column_stack((np.ones_like(max_like_x), max_like_x))
+max_like_y = max_like_x_ext @ max_like_w 
+plt.plot(max_like_x, max_like_y, label='maxlike', color='orange')
 
 plt.title("Bayesian predictive distribution on test data")
 plt.xlabel("x")
