@@ -37,7 +37,7 @@ plt.ylim([-5, 5])
 plt.show()
 
 # Step 2: plot likelihood across all w in parameter space for subset data
-trn_data_size = 3
+trn_data_size = 50
 
 x_trn = np.linspace(-1, 1, 200)
 x_trn_sample = np.random.choice(x_trn, trn_data_size, False)
@@ -90,9 +90,59 @@ plt.ylabel("w1")
 plt.ylim([-5, 5])
 plt.show()
 
-# Step 4:
+# Step 4: Plot sampled regression lines from posterior
 
 x_tst = np.concatenate((np.linspace(-1.5, -1.1, 5), np.linspace(1.1, 1.5, 5)))
-t_tst = w0_true + w1_true*x_tst + np.random.normal(error_mean, error_sigma)
+t_tst = w0_true + w1_true * x_tst + np.random.normal(error_mean, error_sigma)
 
-[w0_sample, w1_sample] = np.random.choice(wposteriorpdf, 5, False)
+wsamples = rv_post.rvs(size=5)
+
+for w in wsamples:
+    t_pred = w[0] + w[1] * x_trn
+    plt.plot(x_trn, t_pred, label=f"w0={w[0]:.2f}, w1={w[1]:.2f}")
+
+plt.scatter(x_trn_sample, t_trn_sample, color='blue', label="Training data")
+plt.scatter(x_tst, t_tst, color='red', label="Test data")
+
+plt.title("Sampled regression lines from posterior")
+plt.xlabel("x")
+plt.ylabel("t")
+plt.xlim([-2, 2])
+plt.ylim([-3, 0.5])
+plt.grid(True)
+plt.legend()
+plt.show()
+
+# Step 5: Make predictions on testing data using the Bayesian predictive distribution
+
+phi_x_tst = np.transpose(np.vstack((np.ones_like(x_tst), x_tst)))
+
+# Predictive mean
+mean_preds = phi_x_tst @ mean_posterior  # shape: (N_test, 1)
+
+# Predictive variance
+var_preds = []
+for phi in phi_x_tst:
+    var = (1 / beta) + phi.T @ cov_matrix_posterior @ phi
+    var_preds.append(var)
+var_preds = np.array(var_preds)
+std_preds = np.sqrt(var_preds)
+
+# Plot predictions with error bars
+plt.figure(figsize=(8, 6))
+plt.errorbar(x_tst, mean_preds.ravel(), yerr=std_preds, fmt='o', color='green', label='Predictive mean ± std')
+
+# Add training and test data for reference
+plt.scatter(x_trn_sample, t_trn_sample, color='blue', label='Training data')
+plt.scatter(x_tst, t_tst, color='red', label='Test targets')
+
+plt.title("Bayesian predictive distribution on test data")
+plt.xlabel("x")
+plt.ylabel("t")
+plt.xlim([-2, 2])
+plt.ylim([-3, 1])
+plt.grid(True)
+plt.legend()
+plt.show()
+
+
