@@ -82,7 +82,13 @@ sum_ML = 0
 for t in range(lin_trn_size):
     sum_ML += (t_trn[t] - w_ML.T @ phi[t]) ** 2
 
-beta_ML = 1 / (1 / lin_trn_size) * sum_ML
+beta_ML = 1 / ((1 / lin_trn_size) * sum_ML)
 
+sum_MSE = 0
 
+x1_lin_tst = np.linspace(-1, 0.35, lin_tst_size)
+x2_lin_tst = np.linspace(-0.3, 0.3, lin_tst_size)
+
+for x in x_:
+    t_pred = w[0] + w[1] *
 
