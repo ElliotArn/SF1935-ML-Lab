@@ -138,3 +138,80 @@ plt.ylabel('Target t')
 plt.legend()
 plt.grid(True)
 plt.show()
+
+#-------------------------------- step 5 ---------------------------------
+
+print("ML Test MSE:", mse_test)
+print("Bayesian Test MSE (Predictive Mean):", mse_bayes)
+
+# To further compare the two approaches, we'll compute and compare their residual errors.
+
+# Residuals (error differences between true test targets and predictions)
+ml_residuals = t_test_noisy - t_pred_test      # For ML predictions
+bayes_residuals = t_test_noisy - mean_pred_bayes  # For Bayesian predictions
+
+# Plot histograms of the residuals for additional insight.
+plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+plt.hist(ml_residuals, bins=20, alpha=0.7, color='blue', label="ML Residuals")
+plt.title("Histogram of ML Residuals")
+plt.xlabel("Residual Error")
+plt.ylabel("Frequency")
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.hist(bayes_residuals, bins=20, alpha=0.7, color='orange', label="Bayesian Residuals")
+plt.title("Histogram of Bayesian Residuals")
+plt.xlabel("Residual Error")
+plt.ylabel("Frequency")
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+
+# Additionally, you may want to compare the predictions directly.
+plt.figure(figsize=(8, 6))
+plt.plot(t_test_noisy, t_pred_test, 'bo', label='ML Predictions')
+plt.plot(t_test_noisy, mean_pred_bayes, 'ro', label='Bayesian Predictions')
+# For a perfect prediction, the points should lie on the y=x line:
+plt.plot([t_test_noisy.min(), t_test_noisy.max()],
+         [t_test_noisy.min(), t_test_noisy.max()], 'k--', label='Ideal')
+plt.xlabel('True Target (Noisy)')
+plt.ylabel('Predicted Target')
+plt.title('Comparison of ML vs Bayesian Predictions')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+#-------------------------------- step 6 ---------------------------------
+# Assuming these variables are already defined:
+# - mean_pred_bayes: Bayesian predictive means for test data (from step 4)
+# - std_pred_bayes: Standard deviation (uncertainty) for the Bayesian predictions (from step 4)
+# - t_pred_test: ML predictions (deterministic predictions from the ML estimator)
+# - t_test_noisy: Noisy true test outputs (ground truth for comparison)
+
+# For plotting convenience we create an index for each test sample.
+test_samples = np.arange(len(t_test_noisy))
+
+plt.figure(figsize=(10, 6))
+
+# Plot the Bayesian predictive means with error bars (uncertainty).
+plt.errorbar(test_samples, mean_pred_bayes, yerr=std_pred_bayes,
+             fmt='o', capsize=5, label='Bayesian Prediction ± Std Dev', color='blue', alpha=0.7)
+
+# Overlay the deterministic ML predictions.
+plt.plot(test_samples, t_pred_test, 's', markersize=8, linestyle='None',
+         label='ML Deterministic Prediction', color='green')
+
+# Also plot the true (noisy) targets for reference.
+plt.scatter(test_samples, t_test_noisy, facecolors='none', edgecolors='red',
+            label='True Noisy Targets', s=60)
+
+# Add labels, a title, and a legend.
+plt.xlabel('Test Sample Index')
+plt.ylabel('Target Value')
+plt.title('Comparison of ML vs. Bayesian Predictions on Test Data')
+plt.legend()
+plt.grid(True)
+plt.show()
