@@ -16,9 +16,9 @@ err_mean = 0
 err_sigma = 1.2
 
 # Step 1 & 2
-lin_size = 40
-lin_trn_size = 14
-lin_tst_size = 26
+lin_size = 41
+lin_trn_size = 13
+lin_tst_size = 28
 
 x1_lin = np.linspace(-1, 1, lin_size)
 x2_lin = np.linspace(-1, 1, lin_size)
@@ -33,27 +33,31 @@ x1_trn_idx = 0
 x2_trn_idx = 0
 
 for x1_i in range(len(x1_lin)):
+    print("h")
     x1 = x1_lin[x1_i]
 
     for x2_i in range(len(x1_lin)):
         x2 = x2_lin[x2_i]
+        print(x1, x2)
         t_i = w0 + w1 * (x1 ** 2) + w2 * (x2 ** 3) + np.random.normal(err_mean, err_sigma)
         ti[x1_i][x2_i] = t_i
 
-        if abs(x1) > 0.3 and abs(x2) > 0.3:
-            t_tst[x1_tst_idx][x2_tst_idx] = t_i + np.random.normal(err_mean, err_sigma)
-            x2_tst_idx += 1
-        else:
+        if np.abs(x1) < 0.31 and np.abs(x2) < 0.31:
+            print(x2_tst_idx)
             t_trn[x1_trn_idx][x2_trn_idx] = t_i
             x2_trn_idx += 1
+        else:
+            t_tst[x1_tst_idx][x2_tst_idx] = t_i + np.random.normal(err_mean, err_sigma)
+            x2_tst_idx += 1
 
     x2_tst_idx = 0
     x2_trn_idx = 0
 
-    if abs(x1) > 0.3:
-        x1_tst_idx += 1
-    else:
+    if x1_i < 13:
         x1_trn_idx += 1
+
+    if x1_i < 28:
+        x1_tst_idx += 1
 
 x1arr, x2arr = np.meshgrid(x1_lin, x2_lin)
 
@@ -89,6 +93,4 @@ sum_MSE = 0
 x1_lin_tst = np.linspace(-1, 0.35, lin_tst_size)
 x2_lin_tst = np.linspace(-0.3, 0.3, lin_tst_size)
 
-for x in x_:
-    t_pred = w[0] + w[1] *
 
