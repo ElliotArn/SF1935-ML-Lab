@@ -25,12 +25,12 @@ ax.set_zlabel('t')
 ax.set_title('Generated Data: $t = w_0 + w_1 x_1^2 + w_2 x_2^3 + \epsilon$')
 plt.show()
 
-fig = plt.figure(figsize=(10, 6))
+fig = plt.figure(figsize=(8, 6))
 ax = fig.add_subplot(111)
 ax.contourf(X1, X2, T, cmap='viridis')
 ax.set_xlabel('x1')
 ax.set_ylabel('x2')
-ax.set_title('Input Space: x1 = [-1, -0.95, ..., 0.95, 1] x x2 = [-1, -0.95, ..., 0.95, 1]')
+ax.set_title('Input Space: $x1 = [-1, -0.95, ..., 0.95, 1]$ x $x2 = [-1, -0.95, ..., 0.95, 1]$')
 plt.show()
 # ------------------------
 # Step 2: Train/Test Split
@@ -38,7 +38,7 @@ plt.show()
 x1_flat, x2_flat, t_flat = X1.ravel(), X2.ravel(), T.ravel()
 X_all = np.vstack((x1_flat, x2_flat)).T
 
-test_mask = (np.abs(x1_flat) > 0.3) & (np.abs(x2_flat) > 0.3)
+test_mask = (np.abs(x1_flat) > 0.31) & (np.abs(x2_flat) > 0.31)
 X_test = X_all[test_mask]
 t_test = t_flat[test_mask]
 X_train = X_all[~test_mask]
@@ -107,7 +107,7 @@ plt.legend(); plt.grid(True); plt.show()
 print("--------- Model Comparison ---------")
 print(f"ML Test MSE       : {mse_test:.4f}")
 print(f"Bayesian Test MSE : {mse_bayes:.4f}")
-print(f"Difference (ML - Bayesian): {mse_test - mse_bayes:.8f}")
+print(f"Difference (ML - Bayesian): {np.abs(mse_test - mse_bayes):.8f}")
 
 plt.figure(figsize=(12, 5))
 plt.subplot(1, 2, 1)
