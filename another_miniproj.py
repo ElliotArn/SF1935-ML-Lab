@@ -31,12 +31,13 @@ ax.set_zlabel('t')
 ax.set_title('Generated Data: t = w0 + w1*x1² + w2*x2³ + ε')
 plt.show()
 
+# 2D contourf plot
 fig = plt.figure()
 ax_2 = fig.add_subplot(111)
 ax_2.contourf(X1_grid, X2_grid, T_generated, cmap='viridis')
 ax_2.set_xlabel('x1')
 ax_2.set_ylabel('x2')
-ax_2.set_title('Generated Data: t = w0 + w1*x1² + w2*x2³ + ε')
+ax_2.set_title('Input space: x1 = [-1, 0.95, ..., 0.95, 1] x x2 = [-1, 0.95, ..., 0.95, 1]')
 plt.show()
 
 
@@ -187,26 +188,6 @@ residuals_bayes = targets_test_noisy - bayes_pred_mean
 print("ML Test MSE:", mse_ml)
 print("Bayesian Test MSE (Predictive Mean):", mse_bayes)
 
-# Plot histograms of the residuals to inspect the error distribution
-plt.figure(figsize=(12, 5))
-
-plt.subplot(1, 2, 1)
-plt.hist(residuals_ml, bins=20, alpha=0.7, color='blue', label="ML Residuals")
-plt.title("Histogram of ML Residuals")
-plt.xlabel("Residual Error")
-plt.ylabel("Frequency")
-plt.legend()
-
-plt.subplot(1, 2, 2)
-plt.hist(residuals_bayes, bins=20, alpha=0.7, color='orange', label="Bayesian Residuals")
-plt.title("Histogram of Bayesian Residuals")
-plt.xlabel("Residual Error")
-plt.ylabel("Frequency")
-plt.legend()
-
-plt.tight_layout()
-plt.show()
-
 # Scatter plot comparing the predictions directly to the true noisy targets
 plt.figure(figsize=(8, 6))
 plt.plot(targets_test_noisy, targets_pred_ml, 'bo', label='ML Predictions')
@@ -242,8 +223,7 @@ plt.plot(test_sample_indices, targets_pred_ml, 's', markersize=8, linestyle='Non
          label='ML Deterministic Prediction', color='green')
 
 # Plot the true noisy test targets for reference
-plt.scatter(test_sample_indices, targets_test_noisy, facecolors='none', edgecolors='red',
-            label='True Noisy Targets', s=60)
+plt.scatter(test_sample_indices, targets_test_noisy, color='red', label='True Noisy Targets', alpha=0.6)
 
 plt.xlabel('Test Sample Index')
 plt.ylabel('Target Value')
