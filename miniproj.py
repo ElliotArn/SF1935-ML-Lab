@@ -29,7 +29,7 @@ t_test +=  np.random.normal(err_mean, err_sigma, size = t_test.shape)
 t_test +=  np.random.normal(err_mean, err_sigma, size = t_test.shape)
 t_train = list(map(lambda pair: true_w[1] * (pair[0]**2) + true_w[2] * (pair[1]**3), X_train))
 t_train = np.array(t_train)
-t_train+=  np.random.normal(err_mean, err_sigma, size = t_train.shape)
+t_train += np.random.normal(err_mean, err_sigma, size = t_train.shape)
 
 def phi(x):
     return np.column_stack((np.ones(x.shape[0]), x[:,0]**2, x[:,1]**3))
@@ -37,7 +37,7 @@ def phi(x):
 phi_train = phi(X_train)
 phi_test = phi(X_test)
 w_max_like = np.linalg.inv(phi_train.T @ phi_train) @ phi_train.T @ t_train
-mse = np.mean((w_max_like @ Phi_test.T - t_test) ** 2)
+mse = np.mean((w_max_like @ phi_test.T - t_test) ** 2)
 print(mse)
 
 beta = 1/mse
