@@ -22,14 +22,21 @@ T_generated = true_weights[0] + true_weights[1] * X1_grid**2 + true_weights[2] *
 T_generated += np.random.normal(0, noise_sigma, X1_grid.shape)
 
 # 3D surface plot with contour overlay of the generated data
-fig = plt.figure(figsize=(10, 6))
+fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 ax.plot_surface(X1_grid, X2_grid, T_generated, cmap='viridis', alpha=0.9)
-# plt.contour(X1_grid, X2_grid, T_generated, offset=T_generated.min()-1, cmap='viridis')
 ax.set_xlabel('x1')
 ax.set_ylabel('x2')
 ax.set_zlabel('t')
 ax.set_title('Generated Data: t = w0 + w1*x1² + w2*x2³ + ε')
+plt.show()
+
+fig = plt.figure()
+ax_2 = fig.add_subplot(111)
+ax_2.contourf(X1_grid, X2_grid, T_generated, cmap='viridis')
+ax_2.set_xlabel('x1')
+ax_2.set_ylabel('x2')
+ax_2.set_title('Generated Data: t = w0 + w1*x1² + w2*x2³ + ε')
 plt.show()
 
 
