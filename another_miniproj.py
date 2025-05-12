@@ -25,6 +25,13 @@ ax.set_zlabel('t')
 ax.set_title('Generated Data: $t = w_0 + w_1 x_1^2 + w_2 x_2^3 + \epsilon$')
 plt.show()
 
+fig = plt.figure(figsize=(10, 6))
+ax = fig.add_subplot(111)
+ax.contourf(X1, X2, T, cmap='viridis')
+ax.set_xlabel('x1')
+ax.set_ylabel('x2')
+ax.set_title('Input Space: x1 = [-1, -0.95, ..., 0.95, 1] x x2 = [-1, -0.95, ..., 0.95, 1]')
+plt.show()
 # ------------------------
 # Step 2: Train/Test Split
 # ------------------------
