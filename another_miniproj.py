@@ -126,7 +126,8 @@ plt.xlabel('True')
 plt.ylabel('Predicted')
 plt.grid(True)
 plt.suptitle('Comparison: ML vs Bayesian')
-plt.tight_layout(); plt.show()
+plt.tight_layout()
+plt.show()
 
 # Step 6: Bayesian Predictions on Training Data
 mean_pred_train = Phi_train @ mN
