@@ -16,7 +16,7 @@ T = w_true[0] + w_true[1] * X1**2 + w_true[2] * X2**3 + np.random.normal(0, sigm
 # 2D plot
 fig = plt.figure(figsize=(8, 6))
 ax = fig.add_subplot(111)
-ax.contourf(X1, X2, T)
+ax.contourf(X1, X2, T, cmap="viridis")
 ax.set_xlabel('x1')
 ax.set_ylabel('x2')
 ax.set_title('Input Space: $x1 = [-1, -0.95, ..., 0.95, 1]$ x $x2 = [-1, -0.95, ..., 0.95, 1]$')
@@ -117,6 +117,30 @@ cp = plt.contourf(X1_test_grid, X2_test_grid, std_grid, cmap='plasma')
 plt.xlabel('x1')
 plt.ylabel('x2')
 plt.title('Predictive Standard Deviation (Bayesian)')
+plt.colorbar(cp, label='Std Dev')
+plt.grid(True)
+plt.show()
+
+# Step 4 Extended: Predictive Std Dev over Entire Input Space (X1, X2 Grid)
+
+# Full dataset for grid predictions
+X_full = np.column_stack((X1.ravel(), X2.ravel()))
+Phi_full = np.column_stack((np.ones(X_full.shape[0]), X_full[:, 0]**2, X_full[:, 1]**3))
+
+# Bayesian predictions on full grid
+mean_pred_full = Phi_full @ mN
+var_pred_full = (1 / beta) + np.sum(Phi_full @ SN * Phi_full, axis=1)
+std_pred_full = np.sqrt(var_pred_full)
+
+# Reshape for contour plotting
+std_grid_full = std_pred_full.reshape(X1.shape)
+
+# Plot the contour of standard deviation over the entire input space
+plt.figure(figsize=(8, 6))
+cp = plt.contourf(X1, X2, std_grid_full, cmap='viridis')
+plt.xlabel('x1')
+plt.ylabel('x2')
+plt.title('Predictive Standard Deviation (Bayesian, Full Input Space)')
 plt.colorbar(cp, label='Std Dev')
 plt.grid(True)
 plt.show()
