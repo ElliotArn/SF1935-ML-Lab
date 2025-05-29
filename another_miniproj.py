@@ -128,6 +128,9 @@ plt.show()
 X_full = np.column_stack((X1.ravel(), X2.ravel()))
 Phi_full = np.column_stack((np.ones(X_full.shape[0]), X_full[:, 0]**2, X_full[:, 1]**3))
 
+SN_inv = alpha * I + beta * (Phi_full.T @ Phi_full)
+SN = np.linalg.inv(SN_inv)
+mN = beta * SN @ Phi_full.T @ t_flat
 # Bayesian predictions on full grid
 mean_pred_full = Phi_full @ mN
 var_pred_full = (1 / beta) + np.sum(Phi_full @ SN * Phi_full, axis=1)
@@ -145,6 +148,30 @@ plt.title('Predictive Standard Deviation (Bayesian, Full Input Space)')
 plt.colorbar(cp, label='Std Dev')
 plt.grid(True)
 plt.show()
+
+
+C_norm = (std_grid_full - std_grid_full.min()) / (std_grid_full.max() - std_grid_full.min())
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+# Match shape of X1/X2
+mean_pred_full = mean_pred_full.reshape(X1.shape)
+surf = ax.plot_surface(X1, X2, mean_pred_full,
+                       facecolors=plt.cm.viridis(C_norm),
+                       rstride=1, cstride=1,
+                       antialiased=False, shade=False)
+mappable = plt.cm.ScalarMappable(cmap='viridis')
+mappable.set_array(std_grid_full)
+fig.colorbar(surf, ax=ax, shrink=0.5, aspect=5, label='Standard Deviation')
+
+ax.set_xlabel('X1')
+ax.set_ylabel('X2')
+ax.set_zlabel('Predicted Mean')
+plt.title("")
+
+plt.show()
+
 
 # Step 5
 print("--------- Model Comparison ---------\n")
