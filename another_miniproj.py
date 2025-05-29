@@ -22,16 +22,6 @@ ax.set_ylabel('x2')
 ax.set_title('Input Space: $x1 = [-1, -0.95, ..., 0.95, 1]$ x $x2 = [-1, -0.95, ..., 0.95, 1]$')
 plt.show()
 
-# 3D plot
-fig = plt.figure(figsize=(10, 6))
-ax = fig.add_subplot(111, projection='3d')
-ax.plot_surface(X1, X2, T, cmap='viridis')
-ax.set_xlabel('x1')
-ax.set_ylabel('x2')
-ax.set_zlabel('t')
-ax.set_title('Generated Data: $t = w_0 + w_1 x_1^2 + w_2 x_2^3 + \epsilon$')
-plt.show()
-
 # Step 2
 x1_flat = X1.ravel()
 x2_flat = X2.ravel()
@@ -47,11 +37,11 @@ t_test_noisy = t_test + np.random.normal(0, sigma, size=t_test.shape)
 
 # Training and test data split plot
 plt.figure(figsize=(8, 6))
-plt.scatter(X_train[:, 0], X_train[:, 1], c='blue', label='Train', alpha=0.5)
-plt.scatter(X_test[:, 0], X_test[:, 1], c='red', label='Test', alpha=0.5)
+plt.scatter(X_train[:, 0], X_train[:, 1], c='blue', label='Training data', alpha=0.5)
+plt.scatter(X_test[:, 0], X_test[:, 1], c='red', label='Test data', alpha=0.5)
 plt.xlabel('x1')
 plt.ylabel('x2')
-plt.title('Train vs Test Split')
+plt.title('Training data and test data points')
 plt.legend()
 plt.grid(True)
 plt.show()
@@ -68,10 +58,10 @@ mse_test = np.mean((mean_pred_ML - t_test_noisy) ** 2)
 plt.figure(figsize=(8, 6))
 plt.scatter(t_test_noisy, mean_pred_ML, alpha=0.7)
 plt.plot([t_test_noisy.min(), t_test_noisy.max()], [t_test_noisy.min(), t_test_noisy.max()], 'r--',
-         label='Perfect Prediction')
-plt.xlabel('True Target (Noisy)')
-plt.ylabel('Predicted Target')
-plt.title('ML Predictions on Test Data')
+         label='Perfect prediction')
+plt.xlabel('Test data values')
+plt.ylabel('ML predicted values')
+plt.title('ML predictions on test Data')
 plt.legend()
 plt.grid(True)
 plt.show()
@@ -90,15 +80,44 @@ var_pred_bayes = (1 / beta) + np.sum(Phi_test @ SN * Phi_test, axis=1)
 std_pred_bayes = np.sqrt(var_pred_bayes)
 mse_bayes = np.mean((mean_pred_bayes - t_test_noisy)**2)
 
-# Bayesian predictions w/ error bars plot
+# Step 4 - CONTINUED: Contour plot of std deviation over input space
+
+# First, you need to reshape the test standard deviations back to grid form
+# Reconstruct a grid for test points
+x1_test = X_test[:, 0]
+x2_test = X_test[:, 1]
+
+# Define resolution of the test region
+test_res = int(np.sqrt(len(x1_test)))  # Assumes grid sampling of test points
+
+# If the test points were sampled on a grid, sort them appropriately
+# Create a grid of x1 and x2 for test points
+x1_sorted = np.sort(np.unique(x1_test))
+x2_sorted = np.sort(np.unique(x2_test))
+X1_test_grid, X2_test_grid = np.meshgrid(x1_sorted, x2_sorted)
+
+# You need to match standard deviations to their grid positions
+# Create an empty matrix to store stds on the grid
+std_grid = np.full(X1_test_grid.shape, np.nan)
+
+# Fill std_grid by matching coordinates (can be slow if not vectorized)
+for i in range(len(x1_test)):
+    x_val = x1_test[i]
+    y_val = x2_test[i]
+    std_val = std_pred_bayes[i]
+
+    # Find matching index
+    ix = np.where(x1_sorted == x_val)[0][0]
+    iy = np.where(x2_sorted == y_val)[0][0]
+    std_grid[iy, ix] = std_val
+
+# Plot the contour of standard deviation
 plt.figure(figsize=(8, 6))
-plt.errorbar(np.arange(len(t_test_noisy)), mean_pred_bayes, yerr=std_pred_bayes, fmt='o',
-             label='Bayesian Prediction ± Std Dev', alpha=0.7)
-plt.scatter(np.arange(len(t_test_noisy)), t_test_noisy, color='red', alpha=0.6, label='True (Noisy)')
-plt.title('Bayesian Predictive Mean and Uncertainty')
-plt.xlabel('Test Sample Index')
-plt.ylabel('Target t')
-plt.legend()
+cp = plt.contourf(X1_test_grid, X2_test_grid, std_grid, cmap='plasma')
+plt.xlabel('x1')
+plt.ylabel('x2')
+plt.title('Predictive Standard Deviation (Bayesian)')
+plt.colorbar(cp, label='Std Dev')
 plt.grid(True)
 plt.show()
 
