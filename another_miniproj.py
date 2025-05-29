@@ -16,10 +16,11 @@ T = w_true[0] + w_true[1] * X1**2 + w_true[2] * X2**3 + np.random.normal(0, sigm
 # 2D plot
 fig = plt.figure(figsize=(8, 6))
 ax = fig.add_subplot(111)
-ax.contourf(X1, X2, T, cmap="viridis")
+t_val = ax.contourf(X1, X2, T, cmap="viridis")
 ax.set_xlabel('x1')
 ax.set_ylabel('x2')
-ax.set_title('Input Space: $x1 = [-1, -0.95, ..., 0.95, 1]$ x $x2 = [-1, -0.95, ..., 0.95, 1]$')
+ax.set_title('Input Space (x1, x2)')
+plt.colorbar(t_val, label='t')
 plt.show()
 
 # Step 2
